@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "solana-demo",
+    "name": "SolanaWalletConnectDemo",
     "slug": "solana-demo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,16 +12,32 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.timmyjose.solanademo"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.timmyjose.solanademo"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8e7703ce-e9a8-43a5-aa79-28e2d309ed8f"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8e7703ce-e9a8-43a5-aa79-28e2d309ed8f"
+    },
+    "plugins": [
+      "expo-build-properties"
+    ]
   }
 }
