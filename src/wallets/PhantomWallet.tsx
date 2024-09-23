@@ -69,7 +69,6 @@ const PhantomWallet = () => {
     }
 
     if (/onConnect/.test(url.pathname || url.host)) {
-      console.warn('Inside onConnect callback')
       const sharedSecretDapp = nacl.box.before(
         bs58.decode(params.get('phantom_encryption_public_key')!),
         dappKeyPair.secretKey
@@ -106,7 +105,7 @@ const PhantomWallet = () => {
       redirect_link: onConnectRedirectLink
     })
 
-    const url = buildUrl('connect', params)
+    const url = buildUrl('phantom', 'connect', params)
     Linking.openURL(url)
   }
 
@@ -133,7 +132,7 @@ const PhantomWallet = () => {
       payload: bs58.encode(encryptedPayload)
     })
 
-    const url = buildUrl('disconnect', params)
+    const url = buildUrl('phantom', 'disconnect', params)
     Linking.openURL(url)
   }
 
@@ -153,7 +152,7 @@ const PhantomWallet = () => {
       payload: bs58.encode(encryptedPayload)
     })
 
-    const url = buildUrl('signMessage', params)
+    const url = buildUrl('phantom', 'signMessage', params)
     Linking.openURL(url)
   }
 
