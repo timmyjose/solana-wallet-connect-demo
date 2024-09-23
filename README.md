@@ -1,4 +1,4 @@
-Demonstration of [Wallet Connect](https://docs.walletconnect.com/appkit/react/core/installation?platform=solana) with [Solana](https://solana.com/) in an `expo` `React Native` app.
+Demonstration of connecting [Phantom](https://phantom.app/en-GB) and [Solflare](https://solflare.com/) `Solana` wallets in a `React Native` `expo` app.
 
 ## Build and Run
 
