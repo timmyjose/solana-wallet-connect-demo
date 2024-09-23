@@ -15,7 +15,6 @@ import { buildUrl, decryptPayload, encryptPayload } from './util'
 
 const onConnectRedirectLink = Linking.createURL('Phantomwallet/onConnect')
 const onDisconnectRedirectLink = Linking.createURL('onDisconnect')
-const onShowBalanceRedirectLink = Linking.createURL('onShowBalance')
 const onSignMessageRedirectLink = Linking.createURL('onSignMessage')
 
 const PhantomWallet = () => {
@@ -58,11 +57,9 @@ const PhantomWallet = () => {
   
   // handle inbound links
   useEffect(() => {
-    console.log('EINS')
     if (!deepLink) {
       return
     }
-    console.log('ZWEI')
 
     const url = new URL(deepLink)
     const params = url.searchParams
@@ -108,6 +105,15 @@ const PhantomWallet = () => {
     Linking.openURL(url)
   }
 
+  const handleShowBalance = async () => {
+    try {
+      const balance = parseInt(await connection.getBalance(phantomWalletPublicKey)) / 1e9
+      setOutput(`Balance = ${balance} SOL`)
+    } catch (err: any) {
+      setErrorMessage(err.toString())
+    }
+  }
+
   const handleDisconnect = async () => {
     const payload = { 
       session
@@ -144,13 +150,13 @@ const PhantomWallet = () => {
         </Pressable>
         <Pressable
           style={globalStyles.smallButton}
-          onPress={handleDisconnect}>
-          <Text>Disconnect</Text>
+          onPress={handleShowBalance}>
+          <Text>Show Balance</Text>
         </Pressable>
         <Pressable
           style={globalStyles.smallButton}
-          onPress={() => {}}>
-          <Text>Show Balance</Text>
+          onPress={handleDisconnect}>
+          <Text>Disconnect</Text>
         </Pressable>
         <Pressable
           style={globalStyles.smallButton}

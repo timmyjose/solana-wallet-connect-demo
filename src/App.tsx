@@ -21,18 +21,6 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const App = () => {
-  // // for testing
-  // useEffect(() => {
-  //   const analyseDeepLink = ({ url }: Linking.EventType) => {
-  //     console.warn(`incoming deep link: ${url}`)
-  //   }
-
-  //   const subscription = Linking.addEventListener('url', analyseDeepLink)
-
-  //   return () => {
-  //     subscription.remove()
-  //   }
-  // })
   const linking = {
     prefixes: [prefix, 'swcd', 'swcd://'],
     config: {

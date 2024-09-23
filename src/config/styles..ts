@@ -20,7 +20,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 5,
     height: 40,
     width: '20%',
-    margin: 5,
+    margin: 10,
     justifyContent: 'center',
     alignItems: 'center'
   }
