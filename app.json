@@ -27,11 +27,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "8e7703ce-e9a8-43a5-aa79-28e2d309ed8f"
-      }
-    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -40,6 +35,11 @@
     },
     "plugins": [
       "expo-build-properties"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9b3b3298-b6b9-4c95-b0e5-720dbb32490f"
+      }
+    }
   }
 }
