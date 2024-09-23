@@ -12,10 +12,11 @@ import nacl, { BoxKeyPair } from 'tweetnacl'
 import { useContext, useEffect, useState } from 'react'
 import { SolanaNetworkContext } from '../providers/SolanaNetworkContextProvider'
 import { buildUrl, decryptPayload, encryptPayload } from './util'
+import { Buffer } from 'buffer'
 
-const onConnectRedirectLink = Linking.createURL('Phantomwallet/onConnect')
-const onDisconnectRedirectLink = Linking.createURL('onDisconnect')
-const onSignMessageRedirectLink = Linking.createURL('onSignMessage')
+const onConnectRedirectLink = Linking.createURL('PhantomWallet/onConnect')
+const onDisconnectRedirectLink = Linking.createURL('PhantomWallet/onDisconnect')
+const onSignMessageRedirectLink = Linking.createURL('PhantomWallet/onSignMessage')
 
 const PhantomWallet = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
@@ -37,7 +38,6 @@ const PhantomWallet = () => {
   useEffect(() => {
     (async () => {
       const initialUrl = await Linking.getInitialURL()
-      console.log(`initialUrl = ${initialUrl}`)
       if (initialUrl) {
         setDeepLink(initialUrl)
       }
@@ -51,7 +51,6 @@ const PhantomWallet = () => {
   }, [])
 
   const handleDeepLink = ({ url } : Linking.EventType) => {
-    console.log(`Setting deep link to ${url}`)
     setDeepLink(url)
   }
   
@@ -88,8 +87,14 @@ const PhantomWallet = () => {
 
       setOutput(JSON.stringify(connectData, null, 2))
     } else if (/onDisconnect/.test(url.pathname || url.host)) {
-      console.log('Inside onDisconnect callback')
       setOutput('Disconnected')
+    } else if (/onSignMessage/.test(url.pathname || url.host)) {
+      const signMessageData = decryptPayload(
+        params.get('data')!,
+        params.get('nonce')!,
+        sharedSecret
+      )
+      setOutput(JSON.stringify(signMessageData, null, 2))
     }
   }, [deepLink])
 
@@ -132,6 +137,26 @@ const PhantomWallet = () => {
     Linking.openURL(url)
   }
 
+  const handleSignMessage = async () => {
+    const message = 'the quick brown fox jumps over the lazy dog'
+
+    const payload = {
+      session,
+      message: bs58.encode(Buffer.from(message))
+    }
+    const [nonce, encryptedPayload] = encryptPayload(payload, sharedSecret)
+
+    const params = new URLSearchParams({
+      dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
+      nonce: bs58.encode(nonce),
+      redirect_link: onSignMessageRedirectLink,
+      payload: bs58.encode(encryptedPayload)
+    })
+
+    const url = buildUrl('signMessage', params)
+    Linking.openURL(url)
+  }
+
   return (
     <View style={globalStyles.container}>
       { !!errorMessage && (<Text style={{
@@ -160,7 +185,7 @@ const PhantomWallet = () => {
         </Pressable>
         <Pressable
           style={globalStyles.smallButton}
-          onPress={() => {}}>
+          onPress={handleSignMessage}>
           <Text>Sign Message</Text>
         </Pressable>
       </View>
