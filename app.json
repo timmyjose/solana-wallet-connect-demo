@@ -1,8 +1,10 @@
 {
   "expo": {
     "name": "SolanaWalletConnectDemo",
-    "slug": "solana-demo",
+    "slug": "solana-wallet-connect-demo",
+    "owner": "timmyjose",
     "version": "1.0.0",
+    "scheme": "swcd",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.timmyjose.solanademo"
+      "bundleIdentifier": "com.timmyjose.solanawalletconnectdemo"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.timmyjose.solanademo"
+      "package": "com.timmyjose.solanawalletconnectdemo"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -14,5 +14,14 @@ export const globalStyles = StyleSheet.create({
     margin: 5,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  smallButton: {
+    backgroundColor: '#c0c0c0',
+    borderRadius: 5,
+    height: 40,
+    width: '20%',
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
