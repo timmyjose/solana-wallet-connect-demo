@@ -1,7 +1,7 @@
 import bs58 from 'bs58'
 import nacl from 'tweetnacl'
 
-export type SolanWallet = 'phantom' | 'solflare'
+export type SolanaWalletKind = 'phantom' | 'solflare'
 
 export const decryptPayload = (data: string, nonce: string, sharedSecret?: Uint8Array) => {
   if (!sharedSecret) throw new Error("missing shared secret")
@@ -27,7 +27,7 @@ export const encryptPayload = (payload: any, sharedSecret?: Uint8Array) => {
   return [nonce, encryptedPayload]
 }
 
-export const buildUrl = (wallet: SolanWallet, path: string, params: URLSearchParams) =>  {
+export const buildUrl = (wallet: SolanaWalletKind, path: string, params: URLSearchParams) =>  {
   if (wallet === 'phantom') {
     return `phantom://v1/${path}?${params.toString()}`
   } else {
