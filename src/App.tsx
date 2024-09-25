@@ -7,7 +7,6 @@ import SolflareWallet from './wallets/SolflareWallet'
 import SolanaNetworkContextProvider from './providers/SolanaNetworkContextProvider'
 import * as Linking from 'expo-linking'
 import { Text } from 'react-native'
-import { useEffect } from 'react'
 
 const prefix = Linking.createURL('/')
 

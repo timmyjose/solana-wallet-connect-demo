@@ -5,6 +5,7 @@ const PhantomWallet = () => {
   const onConnectRedirectLink = Linking.createURL('PhantomWallet/onConnect')
   const onDisconnectRedirectLink = Linking.createURL('PhantomWallet/onDisconnect')
   const onSignMessageRedirectLink = Linking.createURL('PhantomWallet/onSignMessage')
+  const onSignTxnRedirectLink = Linking.createURL('PhantomWallet/onSignTxn')
   const appUrl = 'https://phantom.app'
   const urlPrefix = ''
 
@@ -14,6 +15,7 @@ const PhantomWallet = () => {
       onConnectRedirectLink={onConnectRedirectLink} 
       onDisconnectRedirectLink={onDisconnectRedirectLink} 
       onSignMessageRedirectLink={onSignMessageRedirectLink} 
+      onSignTxnRedirectLink={onSignTxnRedirectLink}
       appUrl={appUrl} 
       urlPrefix={urlPrefix}  
       />

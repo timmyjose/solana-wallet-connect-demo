@@ -3,11 +3,11 @@ import 'react-native-url-polyfill/auto'
 import bs58 from 'bs58'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { RootStackParamList } from '../App'
 import { globalStyles } from '../config/styles.'
 import * as Linking from 'expo-linking'
-import { clusterApiUrl,  Connection, PublicKey } from '@solana/web3.js'
+import { clusterApiUrl,  Connection, PublicKey, SystemProgram, Transaction } from '@solana/web3.js'
 import nacl, { BoxKeyPair } from 'tweetnacl'
 import { useContext, useEffect, useState } from 'react'
 import { SolanaNetworkContext } from '../providers/SolanaNetworkContextProvider'
@@ -19,11 +19,12 @@ export type SolanaWalletProps = {
   onConnectRedirectLink: string,
   onDisconnectRedirectLink: string,
   onSignMessageRedirectLink: string,
+  onSignTxnRedirectLink: string
   appUrl: string,
   urlPrefix: string
 }
 
-const SolanaWallet = ({ walletKind, onDisconnectRedirectLink, onConnectRedirectLink, onSignMessageRedirectLink, appUrl, urlPrefix }: SolanaWalletProps) => {
+const SolanaWallet = ({ walletKind, onDisconnectRedirectLink, onConnectRedirectLink, onSignMessageRedirectLink, onSignTxnRedirectLink, appUrl, urlPrefix }: SolanaWalletProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
   const [output, setOutput] = useState<string | null>(null)
@@ -100,6 +101,15 @@ const SolanaWallet = ({ walletKind, onDisconnectRedirectLink, onConnectRedirectL
         sharedSecret
       )
       setOutput(JSON.stringify(signMessageData, null, 2))
+    } else if (/onSignTxn/.test(url.pathname || url.host)) {
+      const signTxnData = decryptPayload(
+        params.get('data')!,
+        params.get('nonce')!,
+        sharedSecret
+      )
+
+      const decodedTxn = Transaction.from(bs58.decode(signTxnData.transaction))
+      setOutput(JSON.stringify(decodedTxn, null, 2))
     }
   }, [deepLink])
 
@@ -163,16 +173,66 @@ const SolanaWallet = ({ walletKind, onDisconnectRedirectLink, onConnectRedirectL
     Linking.openURL(url)
   }
 
+  const createTxn = async () => {
+    if (!walletPublicKey) {
+      throw new Error('missing public key for txn')
+    }
+
+    const txn = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: walletPublicKey,
+        toPubkey: walletPublicKey,
+        lamports: 100
+      })
+    )
+
+    txn.feePayer = walletPublicKey
+    const anyTxn = txn
+    anyTxn.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
+    return txn
+  }
+
+  const handleSignTxn = async () => {
+    const txn = await createTxn()
+
+    const serializedTxn = bs58.encode(
+      txn.serialize({
+        requireAllSignatures: false // what does this mean?
+      })
+    )
+
+    const payload = {
+      session,
+      transaction: serializedTxn
+    }
+
+    const [nonce, encryptedPayload] = encryptPayload(payload, sharedSecret)
+
+    const params = new URLSearchParams({
+      dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
+      nonce: bs58.encode(nonce),
+      redirect_link: onSignTxnRedirectLink,
+      payload: bs58.encode(encryptedPayload)
+    })
+
+    const url = buildUrl(walletKind, `${urlPrefix}signTransaction`, params)
+    Linking.openURL(url)
+  }
+
   return (
     <View style={globalStyles.container}>
       { !!errorMessage && (<Text style={{
         marginLeft: 10,
         marginRight: 10
       }}>{errorMessage}</Text>) }
-      { !!output && (<Text style={{ 
-        marginLeft: 10,
-        marginRight: 10
-        }}>{output}</Text>) }
+      { !!output && (
+        <ScrollView>
+          <Text style={{ 
+          marginLeft: 10,
+          marginRight: 10
+          }}>{output}</Text>
+        </ScrollView>
+        ) }
       <View style={{ flexDirection: 'row'}}>
         <Pressable
           style={globalStyles.smallButton}
@@ -194,6 +254,11 @@ const SolanaWallet = ({ walletKind, onDisconnectRedirectLink, onConnectRedirectL
           onPress={handleSignMessage}>
           <Text>Sign Message</Text>
         </Pressable>
+       <Pressable
+        style={globalStyles.smallButton}
+        onPress={handleSignTxn}>
+          <Text>Sign Txn</Text>
+      </Pressable>
       </View>
       <Pressable
         style={globalStyles.button}

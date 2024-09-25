@@ -19,8 +19,8 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: '#c0c0c0',
     borderRadius: 5,
     height: 40,
-    width: '20%',
-    margin: 10,
+    width: '17%',
+    margin: 5,
     justifyContent: 'center',
     alignItems: 'center'
   }
